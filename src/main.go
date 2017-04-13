@@ -2,36 +2,29 @@ package main
 
 import (
   "log"
-  "os"
-
   "github.com/spf13/viper"
 )
 
-func readConfig() {
+func readConfig() string{
+  log.Println("Reading config")
   v := viper.New()
   v.SetConfigName("bridge")
-  v.SetConfigType("yaml")
-  v.AddConfigPath("$HOME/.bridge")
-  v.AddConfigPath("./config/bridge")
+  v.AddConfigPath("config")
 
-  err := viper.ReadInConfig()
+  err := v.ReadInConfig()
   if err != nil {
     log.Println("Could not read config file")
     log.Fatal(err)
   }
 
-  //token := v.Get("apitoken")
-  //return token
+  token := v.GetString("apikey")
+  return token
 }
 
 func main() {
-  // update this to read a config file
-  if len(os.Args) != 2 {
-    log.Println("Missing token string arugment")
-    log.Fatal("Start server: bridge tokenstring")
-  }
+  log.Println("Starting gobridge server")
+  token := readConfig()
 
-  //token := readConfig()
-  token := os.Args[1]
+  log.Println("Getting bridge status")
   getStatus(token)
 }

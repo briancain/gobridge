@@ -2,7 +2,6 @@ package main
 
 import (
   "encoding/json"
-  "fmt"
   "io/ioutil"
   "log"
   "net/http"
@@ -20,11 +19,14 @@ func readBridgeData(data []byte) {
   if err := json.Unmarshal(data, &bridges); err != nil {
     log.Fatal(err)
   }
-  fmt.Println(bridges)
+  //fmt.Println(bridges)
+
   for _, bridge := range bridges {
-    //fmt.Println("bridge:", bridge)
     myBridge,_ := bridge.(map[string]interface{})
-    fmt.Println(myBridge["name"], ":", myBridge["isUp"])
+
+    name := myBridge["name"]
+    status := myBridge["isUp"]
+    log.Printf("%s status: %t", name, status)
   }
 }
 

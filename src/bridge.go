@@ -11,13 +11,8 @@ import (
 const bridgeAPI string = "https://api.multco.us"
 
 type Bridge struct {
-  actualCount int
-  avgUpTime int
-  id int
   name string
   isUp bool
-  scheduledCount int
-  totalUpTime int
 }
 
 func readBridgeData(data []byte) {
@@ -30,14 +25,6 @@ func readBridgeData(data []byte) {
     //fmt.Println("bridge:", bridge)
     myBridge,_ := bridge.(map[string]interface{})
     fmt.Println(myBridge["name"], ":", myBridge["isUp"])
-    //if b, ok := bridge.(map[string]interface{}); ok {
-    //  for k,v := range b {
-    //    fmt.Println(k, " == ", v)
-    //  }
-    //  fmt.Println()
-    //} else {
-    //  fmt.Println("Bridge not a map[string]interface{}: ", bridge)
-    //}
   }
 }
 
@@ -46,15 +33,16 @@ func getStatus(token string){
   resp, err := http.Get(allBridgeURL)
 
   if err != nil {
-    fmt.Println("We h*cked up")
-    log.Fatal(err)
+    log.Printf("Failed to make API request for %s", allBridgeURL)
+    log.Println(err)
+    return
   }
 
   defer resp.Body.Close()
   body, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    fmt.Println("We h*cked up")
-    log.Fatal(err)
+    log.Println("Failed to parse response")
+    log.Println(err)
   }
 
   readBridgeData(body)

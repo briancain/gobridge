@@ -21,10 +21,31 @@ func readConfig() string{
   return token
 }
 
+func startServer(token string) {
+  log.Println("Starting gobridge server")
+  log.Println("Getting bridge status")
+
+  // init data
+  bridges := map[string]bool {
+    "hawthorne": false,
+    "morrison": false,
+    "burnside": false,
+    "broadway": false,
+    "I-5": false,
+  }
+
+  var resp, err = getStatus(bridges, token)
+  if err != nil {
+    log.Fatal(err)
+  } else {
+    bridges = resp
+    log.Println(bridges)
+  }
+}
+
 func main() {
   log.Println("Starting gobridge server")
   token := readConfig()
 
-  log.Println("Getting bridge status")
-  getStatus(token)
+  startServer(token)
 }

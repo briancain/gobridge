@@ -1,0 +1,7 @@
+---
+apikey: "test"
+twitter:
+  consumerkey: "test"
+  consumersecret: "test"
+  accesstoken: "test"
+  accesstokensecret: "test"

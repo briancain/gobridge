@@ -28,8 +28,6 @@ func readConfig() *viper.Viper {
 }
 
 func makeRequest(token string, initBridge map[string]bool, twitterClient *twitter.Client) map[string]bool {
-  // init data
-
   var resp, err = getStatus(initBridge, token, twitterClient)
   if err != nil {
     log.Fatal(err)
@@ -45,6 +43,8 @@ func startServer(token string, twitterClient *twitter.Client) {
   log.Println("Starting gobridge server")
   log.Println("Getting bridge status")
 
+  var interval = 30 * time.Second
+
   bridges := map[string]bool {
     "hawthorne": false,
     "morrison": false,
@@ -54,8 +54,8 @@ func startServer(token string, twitterClient *twitter.Client) {
   }
 
   for {
-    time.Sleep(2 * time.Second)
     bridges = makeRequest(token, bridges, twitterClient)
+    time.Sleep(interval)
   }
 }
 
@@ -88,13 +88,10 @@ func setupTwitterClient(config *viper.Viper) *twitter.Client {
 }
 
 func main() {
-  log.Println("Starting gobridge server")
   viperConfig := readConfig()
 
   token := viperConfig.GetString("apikey")
   twitterClient := setupTwitterClient(viperConfig)
-
-  //tweet, resp, terr := twitterClient.Statuses.Update("Test test", nil)
 
   go startServer(token, twitterClient)
 
